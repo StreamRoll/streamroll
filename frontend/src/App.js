@@ -15,7 +15,7 @@ const abi = [
   "function exchangeRate() public returns (uint)",
   "function transfer(uint amount, address payable _to) public returns (bool)"
 ];
-const contractAddress = "0xC8061C8f8eDD040Ff26cde647B3006E4d395C7E9";
+const contractAddress = "StreamRollSupply contract address here";
 const metaMaskProvider = new ethers.providers.Web3Provider(window.ethereum, "rinkeby");
 const contract = new ethers.Contract(contractAddress, abi , metaMaskProvider);
 const gasPriceHex = ethers.utils.hexlify(20000000000);
