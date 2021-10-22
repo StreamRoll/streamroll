@@ -1,0 +1,51 @@
+body {
+    background-color: rgb(18, 15, 15);
+    overflow-x:hidden
+}
+
+.Logo {
+    margin:auto;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+}
+
+.MetaMask {
+    margin:auto;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    margin-top:50px;
+}
+
+.SupplyEther {
+    margin:auto;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    margin-top:50px;
+}
+
+.form {
+    maring:auto;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    margin-top:0px;
+}
+
+.Reedem {
+    margin:auto;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    margin-top:100px;
+}
+
+.form2 {
+    maring:auto;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    margin-top:0px;
+}

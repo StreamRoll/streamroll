@@ -5,10 +5,10 @@ async function main() {
   
     console.log("Account balance:", (await deployer.getBalance()).toString());
   
-    const StreamRoll = await ethers.getContractFactory("StreamRoll");
-    const streamroll = await StreamRoll.deploy();
+    const StreamRollSupply = await ethers.getContractFactory("StreamRollSupply");
+    const streamrollsupply = await StreamRollSupply.deploy();
   
-    console.log("StreamRoll address -->", streamroll.address);
+    console.log("StreamRollSupply address -->", streamrollsupply.address);
   }
   
   main()
