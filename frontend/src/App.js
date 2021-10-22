@@ -45,7 +45,7 @@ export default function App() {
   async function reedemEth() {
     const signer = metaMaskProvider.getSigner();
     const signerContract = contract.connect(signer);
-    const result = await signerContract.getEtherBack(29 * 1e8,
+    const result = await signerContract.getEtherBack(reedem * 1e8,
     {
       gasLimit:gasLimitHex, 
       gasPrice:gasPriceHex
