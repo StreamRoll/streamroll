@@ -1,51 +1,103 @@
 body {
-    background-color: rgb(18, 15, 15);
+    background-color: black;
     overflow-x:hidden
 }
 
 .Logo {
     margin:auto;
     display:flex;
-    justify-content:center;
+    justify-content:left;
     align-items:flex-start;
+    margin-left:40px;
+    opacity:0.6;
+    margin-top:50px;
 }
 
-.MetaMask {
+.Connect {
     margin:auto;
     display:flex;
     justify-content:center;
     align-items:flex-start;
-    margin-top:50px;
+    margin-top:-20px;
+
+}
+.TitleText {
+    color:white;
+    font-family:Arial, Helvetica, sans-serif;
+    text-align:center;
+    margin-top:20px;
+}
+
+.Card {
+    margin:auto;
+    display:flex;
+    justify-content:left;
+    align-items:flex-start;
+    margin-top:70px;
+    margin-left:40px;
+}
+
+.Card2 {
+    margin:auto;
+    display:flex;
+    justify-content:right;
+    align-items:flex-start;
+    margin-top:-170px;
+    margin-right:40px;
 }
 
 .SupplyEther {
     margin:auto;
     display:flex;
-    justify-content:center;
+    justify-content:left;
     align-items:flex-start;
-    margin-top:50px;
+    margin-top:100px;
+    margin-left:50px;
 }
 
-.form {
-    maring:auto;
+.form{
+    margin:auto;
     display:flex;
-    justify-content:center;
+    justify-content:left;
     align-items:flex-start;
-    margin-top:0px;
+    margin-top:0px;   
+    width:100%;
+    font-size:20px;
+    border-radius:50px;
+    color:white;
+    background-color: transparent;
+    margin-left:20px;
+
 }
 
 .Reedem {
     margin:auto;
     display:flex;
-    justify-content:center;
+    justify-content:right;
     align-items:flex-start;
-    margin-top:100px;
+    margin-top:-100px;
+    margin-right:60px;
 }
 
 .form2 {
-    maring:auto;
+    margin:auto;
+    display:flex;
+    justify-content:right;
+    align-items:flex-start;
+    margin-top:0px;
+    width:100%;
+    font-size:20px;
+    border-radius:50px;
+    color:white;
+    background-color: transparent;
+    margin-right:20px;
+}
+
+.retrieve {
+    margin:auto;
     display:flex;
     justify-content:center;
     align-items:flex-start;
     margin-top:0px;
+    margin-left:50px;
 }
