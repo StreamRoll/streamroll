@@ -1,7 +1,5 @@
-# StreamRoll frontend
+#Frontend
 
-
-## 1. npm i
+## 1. npm install
 ## 2. npm install --save ethers
-## 2. add the corresponding contract address on contract address
 ## 3. npm start

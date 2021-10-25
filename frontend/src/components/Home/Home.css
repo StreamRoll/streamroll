@@ -1,0 +1,12 @@
+body {
+    background-color:black;
+    color:white;
+}
+
+.Text {
+    display:flex;
+    justify-content: center;
+    margin-top:20px;
+}
+
+
