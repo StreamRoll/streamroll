@@ -14,12 +14,14 @@ const abi = [
   "function getCheckout(address _requested) external view returns (uint)",
   "function transferBack(uint _amount, address payable _to) public returns (bool)",
 ];
-const contractAddress = "0x918CD92e42d2D13FFAa42DEDEc26f406442926CB"; //This is a deployed contract.. Change it to yours if you want.
+const contractAddress = "0x067B64684C00E545623062De131eE2330ab891BB"; //This is a deployed contract.. Change it to yours if you want.
 const metaMaskProvider = new ethers.providers.Web3Provider(
   window.ethereum,
   "rinkeby"
 );
 const contract = new ethers.Contract(contractAddress, abi, metaMaskProvider);
+const gasPriceHex = ethers.utils.hexlify(20000000000);
+const gasLimitHex = ethers.utils.hexlify(150000);
 
 const Home = () => {
   const [supplyAmount, setSupplyAmount] = useState("");
@@ -34,16 +36,23 @@ const Home = () => {
     try {
       const signer = metaMaskProvider.getSigner();
       const signerContract = contract.connect(signer);
-      const bal = await signerContract.getBalance(await signer.getAddress());
-      const checkout = await signerContract.getCheckout(
-        await signer.getAddress()
-      );
+      const userAddr = await signer.getAddress();
+      console.log("Before");
+      const bal = await signerContract.getBalance(userAddr, {
+        gasLimit: gasLimitHex,
+        gasPrice: gasPriceHex,
+      });
+      const checkout = await signerContract.getCheckout(userAddr, {
+        gasLimit: gasLimitHex,
+        gasPrice: gasPriceHex,
+      });
       setCollateralBalance(
         ethers.utils.formatEther(bal.toString()) + " " + "ETH"
       );
       setCheckoutBalance(
         ethers.utils.formatEther(checkout.toString()) + " " + "ETH"
       );
+      setUserAddress(userAddr);
     } catch (error) {
       console.error(error);
     }
@@ -98,7 +107,13 @@ const Home = () => {
   const _transfer = async () => {
     const signer = metaMaskProvider.getSigner();
     const signerContract = contract.connect(signer);
-    if ((await signerContract.getCheckout(await signer.getAddress())) <= 0) {
+    if (
+      (await signerContract.getCheckout(await signer.getAddress()),
+      {
+        gasLimit: gasLimitHex,
+        gasPrice: gasPriceHex,
+      }) <= 0
+    ) {
       alert("Insufficient checkout funds");
       return;
     }
