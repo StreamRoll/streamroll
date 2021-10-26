@@ -14,6 +14,36 @@ interface CEth {
 * @notice it accepts eth as collateral and exchanges it for
 * cEth.. Everything happens inside the contract, behaving like a pool.
  */
+
+interface Comptroller {
+    function markets(address) external returns (bool, uint256);
+
+    function enterMarkets(address[] calldata)
+        external
+        returns (uint256[] memory);
+
+    function getAccountLiquidity(address)
+        external
+        view
+        returns (uint256, uint256, uint256);
+}
+interface CErc20 {
+    function mint(uint256) external returns (uint256);
+
+    function borrow(uint256) external returns (uint256);
+
+    function borrowRatePerBlock() external view returns (uint256);
+
+    function borrowBalanceCurrent(address) external returns (uint256);
+
+    function repayBorrow(uint256) external returns (uint256);
+}
+
+
+interface PriceFeed {
+    function getUnderlyingPrice(address cToken) external view returns (uint);
+}
+
 contract StreamRollSupply {
     /**
     * @dev cEth --> the contract's address for cEther on rinkeby
@@ -22,6 +52,7 @@ contract StreamRollSupply {
     CEth cEth;
 
     event Log(string, address, uint);
+    event MyLog(string, uint256);
     
     /**
     * @dev To keep track of balances and authorize
@@ -88,6 +119,73 @@ contract StreamRollSupply {
         checkout[msg.sender] -= _amount;
         emit Log("Transfer succesfull", msg.sender, _amount);
         return true;
+    }
+
+
+
+    function borrowErc20Example(
+        address payable _cEtherAddress,
+        address _comptrollerAddress,
+        address _priceFeedAddress,
+        address _cTokenAddress,
+        uint _underlyingDecimals
+    ) public payable returns (uint256) {
+        CEth cEth = CEth(_cEtherAddress);
+        Comptroller comptroller = Comptroller(_comptrollerAddress);
+        PriceFeed priceFeed = PriceFeed(_priceFeedAddress);
+        CErc20 cToken = CErc20(_cTokenAddress);
+
+        // Supply ETH as collateral, get cETH in return
+        cEth.mint{value:msg.value}();
+
+        // Enter the ETH market so you can borrow another type of asset
+        address[] memory cTokens = new address[](1);
+        cTokens[0] = _cEtherAddress;
+        uint256[] memory errors = comptroller.enterMarkets(cTokens);
+        if (errors[0] != 0) {
+            revert("Comptroller.enterMarkets failed.");
+        }
+
+        // Get my account's total liquidity value in Compound
+        (uint256 error, uint256 liquidity, uint256 shortfall) = comptroller
+            .getAccountLiquidity(address(this));
+        if (error != 0) {
+            revert("Comptroller.getAccountLiquidity failed.");
+        }
+        require(shortfall == 0, "account underwater");
+        require(liquidity > 0, "account has excess collateral");
+
+        // Get the collateral factor for our collateral
+        // (
+        //   bool isListed,
+        //   uint collateralFactorMantissa
+        // ) = comptroller.markets(_cEthAddress);
+        // emit MyLog('ETH Collateral Factor', collateralFactorMantissa);
+
+        // Get the amount of underlying added to your borrow each block
+        // uint borrowRateMantissa = cToken.borrowRatePerBlock();
+        // emit MyLog('Current Borrow Rate', borrowRateMantissa);
+
+        // Get the underlying price in USD from the Price Feed,
+        // so we can find out the maximum amount of underlying we can borrow.
+        uint256 underlyingPrice = priceFeed.getUnderlyingPrice(_cTokenAddress);
+        uint256 maxBorrowUnderlying = liquidity / underlyingPrice;
+
+        // Borrowing near the max amount will result
+        // in your account being liquidated instantly
+        emit MyLog("Maximum underlying Borrow (borrow far less!)", maxBorrowUnderlying);
+
+        // Borrow underlying
+        uint256 numUnderlyingToBorrow = 10;
+
+        // Borrow, check the underlying balance for this contract's address
+        cToken.borrow(numUnderlyingToBorrow * 10**_underlyingDecimals);
+
+        // Get the borrow balance
+        uint256 borrows = cToken.borrowBalanceCurrent(address(this));
+        emit MyLog("Current underlying borrow amount", borrows);
+
+        return borrows;
     }
 }
 
