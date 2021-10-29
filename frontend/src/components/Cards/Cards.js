@@ -57,8 +57,25 @@ const Cards = (props) => {
                     onChange={props.onChange2}
                     placeholder={props.placeholder2}
                     />
-                    <Button variant="outline-secondary" id="button-addon2" onClick={(e) => console.log(e.target.value)}>
+                    <Button 
+                    variant="outline-secondary"
+                     id="button-addon2" 
+                     onClick={props.onClick2}
+                     >
                     {props.button2}
+                    </Button>
+                </InputGroup>
+                <InputGroup className="mb-3" bg="primary">
+                    <FormControl
+                    onChange={props.onChange2a}
+                    placeholder={props.placeholder2a}
+                    />
+                    <Button 
+                    variant="outline-secondary"
+                     id="button-addon2" 
+                     onClick={props.onClick2a}
+                     >
+                    {props.button2a}
                     </Button>
                 </InputGroup>
                 </Card.Body>
