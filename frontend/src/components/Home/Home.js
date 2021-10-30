@@ -15,9 +15,9 @@ const abi = [
   "function transferBack(uint _amount, address payable _to) public returns (bool)",
   "function borrowFromCompound(uint _amount) public payable returns (bool)",
   "function returnBorrowedBalances() external view returns (uint)",
-  "function repayDebt() external payable returns (bool)"
+  "function repayDebt(uint _repayAmount) external returns (bool)"
 ];
-const contractAddress = "0xC4bE75070808ea8A48b9d9221b787F2ff56B094F"; //This is a deployed contract.. Change it to yours if you want.
+const contractAddress = "0x193121EC81aa204dc0EbA2cdEB5393a704004B65"; //This is a deployed contract.. Change it to yours if you want.
 const metaMaskProvider = new ethers.providers.Web3Provider(
   window.ethereum,
   "rinkeby"
@@ -35,6 +35,7 @@ const Home = () => {
   const [amountToBorrow, setAmountToBorrow] = useState("");
   const [borrowedBalance, setBorrowedBalance] = useState("Connect your wallet");
   const [repayAmount, setRepayAmount] = useState("");
+
 
   useEffect(async () => {
     try {
@@ -133,13 +134,11 @@ const Home = () => {
     try {
       const signer = metaMaskProvider.getSigner();
       const signerContract = contract.connect(signer);
-      const amount = repayAmount;
-      await signerContract.repayDebt({
-        value:ethers.utils.parseEther(amount.toString())
-      });
+      const amount = ethers.utils.parseEther(repayAmount);
+      const result = await signerContract.repayDebt(amount);
     } catch(err) {
         alert(err);
-    }
+    }   
   }
   
   

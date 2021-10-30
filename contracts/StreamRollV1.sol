@@ -1,48 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >= 0.8.0 < 0.9.0;
 
+import './interfaces/ICERC20.sol';
+import './interfaces/IERC20.sol';
+import './interfaces/ICETH.sol';
+import './interfaces/IComptroller.sol';
+
 ///@author StreamRoll team:)
-///@title StreamRollSupply
+///@title StreamRollV1
 ///@notice it accepts eth as collateral and exchanges it for
 ///cEth.. Everything happens inside the contract, behaving like a pool.
-interface CEth {
-    function mint() external payable;
-    function redeemUnderlying(uint redeemAmount) external returns (uint);
-}
-
-interface Comptroller {
-    function markets(address) external returns (bool, uint256);
-    function enterMarkets(address[] calldata cTokens)
-        external
-        returns (uint256[] memory);
-    function getAccountLiquidity(address)
-        external
-        view
-        returns (uint256, uint256, uint256);
-    function getAssetsIn(address acount) 
-        external
-        view
-        returns (address[] memory);
-}
-
-interface CErc20 {
-    function mint(uint256) external returns (uint256);
-    function borrow(uint256) external returns (uint256);
-    function borrowRatePerBlock() external view returns (uint256);
-    function borrowBalanceCurrent(address) external returns (uint256);
-    function repayBorrow(uint256) external returns (uint256);
-}
-
-interface PriceFeed {
-    function getUnderlyingPrice(address cToken) external view returns (uint);
-}
-
-
-contract StreamRollSupply {
+/// It then streams chunks to the desired accounts.
+contract StreamRollV1 {
     
-    CEth cEth;
-    CErc20 cDai;
-    Comptroller comptroller;
+    ICETH cEth;
+    ICERC20 cDai;
+    IComptroller comptroller;
 
 
     event Log(string, address, uint);
@@ -60,9 +33,9 @@ contract StreamRollSupply {
     ///@dev cEth --> the contract's address for cEther on rinkeby
     ///cDai--> the contract's address for cDai on rinkeby
     constructor() {
-        cEth = CEth(0xd6801a1DfFCd0a410336Ef88DeF4320D6DF1883e); 
-        cDai = CErc20(0x6D7F0754FFeb405d23C51CE938289d4835bE3b14);
-        comptroller = Comptroller(0x2EAa9D77AE4D8f9cdD9FAAcd44016E746485bddb);
+        cEth = ICETH(0xd6801a1DfFCd0a410336Ef88DeF4320D6DF1883e); 
+        cDai = ICERC20(0x6D7F0754FFeb405d23C51CE938289d4835bE3b14);
+        comptroller = IComptroller(0x2EAa9D77AE4D8f9cdD9FAAcd44016E746485bddb);
     }
 
     receive() external payable {}
@@ -141,16 +114,17 @@ contract StreamRollSupply {
         return cDai.borrowBalanceCurrent(address(this));
     }
 
-    ///@dev repays the borrowed amount
-    function repayDebt() external payable returns (bool) {
-        require(borrowedBalances[msg.sender] <= msg.value, "You are Over Paying");
-        require(cDai.repayBorrow(msg.value) == 0, "Error");
-        borrowedBalances[msg.sender] -= msg.value;
+    ///@dev repays the borrowed amount in dai
+    ///@param _repayAmount = dai * 10 ^18
+    function repayDebt(uint _repayAmount) external returns (bool) {
+        IERC20 underlying = IERC20(0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa);
+        underlying.approve(0x6D7F0754FFeb405d23C51CE938289d4835bE3b14, _repayAmount);
+        require(cDai.repayBorrow(_repayAmount) == 0, "Error in repayBorrow()");
+        borrowedBalances[msg.sender] -= _repayAmount;
         return true;
     }
-
-
 }
+
 
 
 
