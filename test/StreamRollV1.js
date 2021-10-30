@@ -4,7 +4,7 @@ const { expect} = require("chai");
 const provider = waffle.provider;
 
 // npx hardhat test to run the tests
-describe("StreamRollSupply.sol", () => {
+describe("StreamRollV1.sol", () => {
 
     let StreamRollSupply;
     let contract;
@@ -14,7 +14,7 @@ describe("StreamRollSupply.sol", () => {
     beforeEach(async () => {
 
         [user, user2] = await ethers.getSigners();
-        StreamRollSupply = await ethers.getContractFactory("StreamRollSupply");
+        StreamRollSupply = await ethers.getContractFactory("StreamRollV1");
         contract = await StreamRollSupply.deploy();
         signerContract = await contract.connect(user);
 
