@@ -7,8 +7,19 @@ module.exports = {
   solidity: "0.8.7",
   networks: {
     rinkeby: {
-      url: endpoint,
-      accounts: [`0x${pk}`],
-    },
-  },
+      url:endpoint,
+      accounts: [`0x${pk}`]
+    }
+  }
+  //THIS IS FOR TESTING PURPOSES --> FORKING MAINNET
+  // mocha: {
+  //   timeout:100000
+  // },
+  // networks: {
+  //   hardhat: {
+  //     forking: {
+  //       url: "MAINNET URL"
+  //     }
+  //   }
+  // },
 };

@@ -8,16 +8,16 @@ import css from "./Home.css";
 const { ethers } = require("ethers");
 
 const abi = [
-  "function supplyEthToCompound() public payable returns (bool)",
-  "function getEtherBack(uint256 _amount) public returns (bool)",
-  "function getBalance(address _requested) public view returns (uint)",
+  "function supplyEthToCompound() external payable returns (bool)",
+  "function borrowFromCompound(uint _amount) external payable returns (bool)",
+  "function transferBack(uint _amount, address payable _to) external returns (bool)",
+  "function getEtherBack(uint _amount) external returns (bool)",
+  "function repayDebt(uint _repayAmount) external returns (bool)",
+  "function getSuppliedBalances(address _requested) external view returns (uint)",
   "function getCheckout(address _requested) external view returns (uint)",
-  "function transferBack(uint _amount, address payable _to) public returns (bool)",
-  "function borrowFromCompound(uint _amount) public payable returns (bool)",
-  "function returnBorrowedBalances() external view returns (uint)",
-  "function repayDebt(uint _repayAmount) external returns (bool)"
+  "function returnBorrowedBalances() external view returns (uint) "
 ];
-const contractAddress = "0x193121EC81aa204dc0EbA2cdEB5393a704004B65"; //This is a deployed contract.. Change it to yours if you want.
+const contractAddress = "0x9b7481E2160a3ef7ccedb8473c0312714BAAdFCe"; //This is a deployed contract.. Change it to yours if you want.
 const metaMaskProvider = new ethers.providers.Web3Provider(
   window.ethereum,
   "rinkeby"
@@ -41,7 +41,7 @@ const Home = () => {
     try {
       const signer = metaMaskProvider.getSigner();
       const signerContract = contract.connect(signer);
-      const bal = await signerContract.getBalance(await signer.getAddress());
+      const bal = await signerContract.getSuppliedBalances(await signer.getAddress());
       const checkout = await signerContract.getCheckout(
         await signer.getAddress()
       );
