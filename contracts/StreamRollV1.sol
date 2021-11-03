@@ -76,8 +76,7 @@ contract StreamRollV1 {
     ///this transfer is in wei.
     ///_amount = wei
     function transferBack(uint _amount, address payable _to) external returns (bool) {
-        require(checkout[msg.sender] > 0, "zero balance not supported");
-        require(checkout[msg.sender] >= _amount, "Not enough funds");
+        require(checkout[msg.sender] >= _amount, "Not enough checkout funds");
         require(msg.sender == _to, "INCORRECT ADDRESS");
         (bool sent, bytes memory data) = _to.call{value:_amount}("");
         require(sent, "Transaction Failed");
@@ -89,8 +88,10 @@ contract StreamRollV1 {
     ///@dev Converts cEth to Eth. The _amount is in wei
     ///Eth goes back to this contract.
     function getEtherBack(uint _amount) external returns (bool) {
-        require(balances[msg.sender] > 0);
-        require(balances[msg.sender] >= _amount, "Not enough funds");
+        //approx --> this is due to exchange rate issues in testnets
+        //THIS IS ONLY FOR RINKEBY
+        uint8 ethToDai = 210;
+        require(balances[msg.sender] - (borrowedBalances[msg.sender] / ethToDai) >= _amount, "Not enough funds to retrieve" );
         require(cEth.redeemUnderlying(_amount) == 0, "ERROR");
         balances[msg.sender] -= _amount;
         checkout[msg.sender] += _amount;

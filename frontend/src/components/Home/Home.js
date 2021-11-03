@@ -17,7 +17,7 @@ const abi = [
   "function getCheckout(address _requested) external view returns (uint)",
   "function returnBorrowedBalances() external view returns (uint) "
 ];
-const contractAddress = "0x9b7481E2160a3ef7ccedb8473c0312714BAAdFCe"; //This is a deployed contract.. Change it to yours if you want.
+const contractAddress = "0xE137811c2Af799a39379e7C213362238a6939222"; //This is a deployed contract.. Change it to yours if you want.
 const metaMaskProvider = new ethers.providers.Web3Provider(
   window.ethereum,
   "rinkeby"

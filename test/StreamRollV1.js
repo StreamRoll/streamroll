@@ -1,4 +1,3 @@
-const { Signer } = require("@ethersproject/abstract-signer");
 const { expect, assert, should} = require("chai");
 
 const provider = waffle.provider;
@@ -182,22 +181,73 @@ describe("StreamRolV1.sol", () => {
                 value:ethers.utils.parseEther("1")
             });
             //Trying to get more ether back than current balances
-            //Should throw error
-            await attackerContract.getEtherBack(
-                ethers.utils.parseEther("1.0000001")
-            );
+            await expect(attackerContract.getEtherBack(
+                ethers.utils.parseEther("1.0000001"))
+            ).to.be.revertedWith("Not enough funds");
         });
         it("should not be able to borrow", async () => {
             await attackerContract.supplyEthToCompound({
                 value:ethers.utils.parseEther("1")
             });
-            //Should throw error
-            await attackerContract.borrowFromCompound(
+            //Trying to borrow more than accepted
+            await expect(attackerContract.borrowFromCompound(
                 ethers.utils.parseEther("10000")
-            );
+            )).to.be.revertedWith("You need more collateral");
         });
  
-            
+        it("only Alice should be able to borrow", async () =>{
+            await signerContract.supplyEthToCompound({
+                value:ethers.utils.parseEther("10")
+            });
+            await expect(attackerContract.borrowFromCompound(
+                ethers.utils.parseEther("1")
+            )).to.be.revertedWith("You need more collateral");
+        });
+       
+    });
+
+    describe("attacker's journey", () => {
+        //Step 1 Bob supplies eth to compound
+        let amount;
+        beforeEach(async () => {
+            amount = ethers.utils.parseEther("100");
+            await bobContract.supplyEthToCompound( {
+                value:amount
+            });
+        });
+
+        //Step 2 Attacker wants to borrow dai
+        it("should revert due to insufficient collateral", async () => {
+            await expect(attackerContract.borrowFromCompound(
+                1000
+            )).to.be.revertedWith("You need more collateral");
+            //Bob borrowing 1000 dai
+            await bobContract.borrowFromCompound(1000);
+        });
+
+        //Step 3 TODO: handle dai balances (how they can be transfered)
+
+        //Step 4 Attacker wants to repay debt
+        it("should revert", async () => {
+            await bobContract.borrowFromCompound(1000);
+            await expect(attackerContract.repayDebt(1000)).to.be.reverted;
+            //Bob repaying debt
+            //TODO: Handle bob acting malicious --> trying to repay more than he has in dai
+            await bobContract.repayDebt(1000);
+        });
+        
+        //Step 5 Attacker wants to steal funds by adding them to checkout or sending them directly while in collateral
+        it("should revert", async () => {
+            await attackerContract.supplyEthToCompound({
+                value: ethers.utils.parseEther("10")
+            });
+            await attackerContract.borrowFromCompound(
+                ethers.utils.parseEther("2000")
+            );
+            await expect(attackerContract.getEtherBack(
+                ethers.utils.parseEther("5")
+            )).to.be.revertedWith("Not enough funds to retrieve");
+        });
     });
 
 });
