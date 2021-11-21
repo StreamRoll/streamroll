@@ -1,9 +1,8 @@
 require("@nomiclabs/hardhat-waffle");
-require("dotenv").config();
 
-const pk = process.env.PK;
-const mainnetEndpoint = process.env.MAINNET_ENDPOINT;
-const rinkebyEndpoint = process.env.RINKEBY_ENDPOINT;
+const pk = "";
+const mainnetEndpoint = "";
+const rinkebyEndpoint = "https://rinkeby.infura.io/v3/2598d2302edb4d26914e38c5759fbbcb";
 
 module.exports = {
   solidity: "0.8.7",
