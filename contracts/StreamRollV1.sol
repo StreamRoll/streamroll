@@ -18,7 +18,10 @@ contract StreamRollV1 is ReentrancyGuard {
     ICETH cEth;
     ICERC20 cDai;
     IComptroller comptroller;
-
+    
+    bytes32 public constant name = "Stream Roll V1";
+    bytes5 public constant version = "1.0.0";
+    
     event Log(string, address, uint);
 
     ///@dev To keep track of balances and authorize
