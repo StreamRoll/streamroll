@@ -19,6 +19,7 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 ///@author StreamRoll
 contract StreamRollV1 is ReentrancyGuard, Initializable {
 
+    bool private isBase;
     address private owner;
 
     ///@dev Interfaces to interact with Compound and ERC20.
@@ -36,11 +37,18 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
         _;
     }
 
+    // This constructor ensures that this contract can only be used as a master copy for
+    // proxy contracts. isBase = true, makes it impossible to use.
+    constructor() {
+        isBase = true;
+    }
+
     ///@notice This function is called only once at deployment. 
     ///We ensure that the function cannot be called again by the initializer modifier
     ///provided by OpenZeppelin. 
     ///@param _owner the msg.sender of the CloneFactory.
     function initialize(address _owner) external initializer {
+        require(isBase == false);
         owner = _owner;
         cEth = ICETH(0xd6801a1DfFCd0a410336Ef88DeF4320D6DF1883e); 
         cDai = ICERC20(0x6D7F0754FFeb405d23C51CE938289d4835bE3b14);
@@ -48,6 +56,7 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
         // Here we take a last security approach. If the owner was already set, then revert.
         require(owner == address(0), "Owner already constructed");
         owner = _owner;
+        isBase = true;
         emit Creation("New Creation", owner);
     }
 
