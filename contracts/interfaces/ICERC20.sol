@@ -13,5 +13,7 @@ interface ICERC20 {
     function borrowBalanceCurrent(address) external returns (uint256);
     
     function repayBorrow(uint256) external returns (uint256);
+
+    function balanceOfUnderlying(address account) external returns (uint);
 }
 
