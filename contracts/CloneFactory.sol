@@ -29,7 +29,7 @@ contract CloneFactory {
     ///Initialize() can only be called once, this is the perfect time to call it. 
     ///The msg.sender is set as the owner in the base contract through the initialize call
     function _clone() external returns (address) {
-        address identicalChild = Clones.clone(base);
+        address payable identicalChild = payable(Clones.clone(base));
         allClones[msg.sender].push(identicalChild);
         emit NewClone(identicalChild, msg.sender);
         StreamRollV1(identicalChild).initialize(msg.sender);

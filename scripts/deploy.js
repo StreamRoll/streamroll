@@ -5,10 +5,10 @@ async function main() {
   
     console.log("Account balance:", (await deployer.getBalance()).toString());
   
-    const StreamRollSupply = await ethers.getContractFactory("StreamRollV1");
-    const streamrollsupply = await StreamRollSupply.deploy();
+    const CloneFactory = await ethers.getContractFactory("CloneFactory");
+    const cloneFactory = await CloneFactory.deploy("0xB1F2471536A8646BA0Bce9F494e8bc1a85804198");
   
-    console.log("StreamRollV1 address -->", streamrollsupply.address);
+    console.log("CloneFactory address -->", cloneFactory.address);
   }
   
   main()
