@@ -9,6 +9,8 @@
 
 ## DEPLOYED ADDRESSES: 
 
-### StreamRollV1.sol on Rinkeby: 0xB1F2471536A8646BA0Bce9F494e8bc1a85804198
-### CloneFactory.sol on Rinkeby: 0x8C400ed3B8cF561d3337CB59201a867181aE8378
+#### StreamRollV1.sol on Rinkeby: 0x6FA2eF89ab4601B34313BF93E0E039cCCE213c4E
+#### CloneFactory.sol on Rinkeby: 0xef76e3bf8b39f42DBe985e02709D5470E2B3337E
+
+
 

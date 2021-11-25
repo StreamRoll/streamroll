@@ -48,13 +48,11 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
     ///provided by OpenZeppelin. 
     ///@param _owner the msg.sender of the CloneFactory.
     function initialize(address _owner) external initializer {
-        require(isBase == false);
-        owner = _owner;
+        require(isBase == false, "ERROR: Base contract cannot be callable, it is already initialized");
+        require(owner == address(0), "ERROR: Owner not address (0), Contract already initialized");
         cEth = ICETH(0xd6801a1DfFCd0a410336Ef88DeF4320D6DF1883e); 
         cDai = ICERC20(0x6D7F0754FFeb405d23C51CE938289d4835bE3b14);
         comptroller = IComptroller(0x2EAa9D77AE4D8f9cdD9FAAcd44016E746485bddb);
-        // Here we take a last security approach. If the owner was already set, then revert.
-        require(owner == address(0), "Owner already constructed");
         owner = _owner;
         isBase = true;
         emit Creation("New Creation", owner);
@@ -66,7 +64,7 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
     ///@notice supplyEthToCompund --> accepts ether and mints cEth.
     function supplyEthToCompound() external payable nonReentrant onlyOwner {
         cEth.mint{value: msg.value}();
-        emit Log("New balance", msg.sender, msg.value);
+        emit Log("Supplied Balance", msg.sender, msg.value);
     }
 
     ///@dev borrowFromCompund transfers the collateral asset to the protocol 
@@ -84,6 +82,7 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
            revert("Comptroller.enterMarkets failed");
        }
        require(cDai.borrow(_amount) == 0, "Borrow Not Working");
+       emit Log("Borrowed Balance", msg.sender, _amount);
     }
 
     ///@dev transfers the converted amount back to the sender. 
@@ -92,7 +91,7 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
     function transferBack(uint _amount) private onlyOwner {
         (bool sent, ) = payable(owner).call{value:_amount}("");
         require(sent, "Transaction Failed");
-        emit Log("Transfer succesfull", msg.sender, _amount);
+        emit Log("Transfered Back", msg.sender, _amount);
     } 
 
     ///@dev Converts cEth to Eth. The _amount is in wei
@@ -100,7 +99,7 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
     function getEtherBack(uint _amount) external nonReentrant onlyOwner {
         require(cEth.redeemUnderlying(_amount) == 0, "ERROR");
         transferBack(_amount);
-        emit Log("New CHECKOUT REQUESTED", msg.sender, _amount);
+        emit Log("Get Ether Back", msg.sender, _amount);
     }
 
     ///@dev repays the borrowed amount in dai
@@ -109,27 +108,8 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
         IERC20 underlying = IERC20(0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa);
         underlying.approve(0x6D7F0754FFeb405d23C51CE938289d4835bE3b14, _repayAmount);
         require(cDai.repayBorrow(_repayAmount) == 0, "Error in repayBorrow()");
+        emit Log("Repayed Debt", msg.sender, _repayAmount);
     }
-
-   /////////////////////////////////////////////////////////////////////////////////////////////
-   // SIMPLE UTIL FUNCTIONS THAT RETURN BASIC INFORMATION ABOUT THE HOLDINGS OF THIS CONTRACT 
-   /////////////////////////////////////////////////////////////////////////////////////////////
-
-   function returnEtherBalance() external view returns (uint) {
-       return address(this).balance;
-   }
-   
-   ///@notice returns the user's current borrow balance(with interest) in units 
-   /// of the underlying asset (in this case: dai)
-   function returnBorrowedBalance() external onlyOwner returns (uint) {
-       return cDai.borrowBalanceCurrent(address(this));
-   }
-   
-   ///@notice returns the user's underlying balance, representing the assets in the protocol, is equal to
-   ///the uers's cToken balance multiplied by the Exchange Rate.
-   function returnUnderlyingBalance() external onlyOwner returns (uint) {
-       return cDai.balanceOfUnderlying(address(this));
-   }
 }
 
 

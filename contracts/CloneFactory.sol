@@ -27,7 +27,7 @@ contract CloneFactory {
     ///@notice _clone() creates a new clone of the base address. 
     ///It also triggers the "initialize" function with the msg.sender as the argument.
     ///Initialize() can only be called once, this is the perfect time to call it. 
-    ///The msg.sender is set as the owner in the base contract through the initialize call
+    ///The msg.sender is set as the owner in the base contract through the initialize call.
     function _clone() external returns (address) {
         address payable identicalChild = payable(Clones.clone(base));
         allClones[msg.sender].push(identicalChild);
@@ -47,4 +47,6 @@ contract CloneFactory {
         return allClones[_requested];
     }
 }
+
+
 
