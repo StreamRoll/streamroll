@@ -9,6 +9,8 @@ import './interfaces/IComptroller.sol';
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
+import '@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol';
+
 import {
     ISuperfluid,
     ISuperToken, //Superfluid token interface extension of ERC20
@@ -27,12 +29,15 @@ import { IConstantFlowAgreementV1 } from "@superfluid-finance/ethereum-contracts
 ///from the Factory, the msg.sender is sent as an argument for the initialize() function. This makes the
 ///creator of the identical child the unique owner of this contract.
 ///@author StreamRoll
-contract StreamRollV1 is ReentrancyGuard, Initializable {
-    
+contract StreamRollV1 is ReentrancyGuard, Initializable, KeeperCompatibleInterface {
+
     // isBase ensures that this contract cannot be used, only if deployed from the CloneFactory.
     bool private isBase;
     address private owner;
 
+    uint public interval;
+    uint public lastTimeStamp;
+    
     ///@dev Interfaces to interact with Compound and ERC20.
     ICETH cEth;
     ICERC20 cDai;
@@ -72,13 +77,15 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
         require(owner == address(0), "ERROR: Owner not address (0), Contract already initialized");
         owner = _owner;
         isBase = true;
-        cEth = ICETH(0xd6801a1DfFCd0a410336Ef88DeF4320D6DF1883e); 
-        cDai = ICERC20(0x6D7F0754FFeb405d23C51CE938289d4835bE3b14);
-        comptroller = IComptroller(0x2EAa9D77AE4D8f9cdD9FAAcd44016E746485bddb);
-        _host = ISuperfluid(0xeD5B5b32110c3Ded02a07c8b8e97513FAfb883B6);
-        _cfa = IConstantFlowAgreementV1(0xF4C5310E51F6079F601a5fb7120bC72a70b96e2A);
-        _acceptedToken = ISuperToken(0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90);
-        IERC20(0x15F0Ca26781C3852f8166eD2ebce5D18265cceb7).approve(address(0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90), 2**256 - 1);
+        cEth = ICETH(0x41B5844f4680a8C38fBb695b7F9CFd1F64474a72); 
+        cDai = ICERC20(0xF0d0EB522cfa50B716B3b1604C4F0fA6f04376AD);
+        comptroller = IComptroller(0x5eAe89DC1C671724A672ff0630122ee834098657);
+        _host = ISuperfluid(0xF0d7d1D47109bA426B9D8A3Cde1941327af1eea3);
+        _cfa = IConstantFlowAgreementV1(0xECa8056809e7e8db04A8fF6e4E82cD889a46FE2F);
+        _acceptedToken = ISuperToken(0xe3CB950Cb164a31C66e32c320A800D477019DCFF);
+        IERC20(0xB64845D53a373D35160B72492818f0d2F51292c0).approve(address(0xe3CB950Cb164a31C66e32c320A800D477019DCFF), 2**256 - 1);
+        interval = 100;
+        lastTimeStamp = block.timestamp;
         emit Creation("New creation: initialized", owner);
     }
 
@@ -90,17 +97,33 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
         emit Log("Supplied Balance", msg.sender, msg.value);
     }
 
+    function checkUpkeep(bytes calldata checkData) 
+            external 
+            override 
+            view returns 
+            (bool upkeepNeeded, bytes memory performData) 
+    {
+            upkeepNeeded = (block.timestamp - lastTimeStamp) > interval;
+
+            performData = checkData;
+    }
+
+     function performUpkeep(bytes calldata performData) external override {
+        lastTimeStamp = block.timestamp;
+        borrowFromCompound(.01 * 10 ** 18);
+
+        performData;
+    }
+
     ///@notice borrowFromCompund transfers the collateral asset to the protocol 
     ///and creates a borrow balance that begins accumulating interests based
     ///on the borrow rate. The amount borrowed must be less than the 
     ///user's collateral balance multiplied by the collateral factor * exchange rate.
     ///@param _amount the amount to borrow (amount * 1e18)
-    function borrowFromCompound(uint _amount) external payable nonReentrant onlyOwner {
-        //approx --> this is due to exchange rate issues in testnets
-        //THIS IS ONLY FOR RINKEBY
+    function borrowFromCompound(uint _amount) public payable nonReentrant onlyOwner {
         address[] memory cTokens = new address[](2);
-        cTokens[0] = 0xd6801a1DfFCd0a410336Ef88DeF4320D6DF1883e;
-        cTokens[1] = 0x6D7F0754FFeb405d23C51CE938289d4835bE3b14;
+        cTokens[0] = 0x41B5844f4680a8C38fBb695b7F9CFd1F64474a72;
+        cTokens[1] = 0xF0d0EB522cfa50B716B3b1604C4F0fA6f04376AD;
         uint[] memory errors = comptroller.enterMarkets(cTokens);
         if (errors[0] != 0) {
            revert("Comptroller.enterMarkets failed");
@@ -128,8 +151,8 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
     ///@notice repays the borrowed amount in dai.
     ///@param _repayAmount dai * 1e18.
     function repayDebt(uint _repayAmount) external nonReentrant onlyOwner {
-        IERC20 underlying = IERC20(0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa);
-        underlying.approve(0x6D7F0754FFeb405d23C51CE938289d4835bE3b14, _repayAmount);
+        IERC20 underlying = IERC20(0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa);
+        underlying.approve(0xF0d0EB522cfa50B716B3b1604C4F0fA6f04376AD, _repayAmount);
         require(cDai.repayBorrow(_repayAmount) == 0, "Error in repayBorrow()");
         emit Log("Repayed Debt", msg.sender, _repayAmount);
     }
@@ -144,7 +167,7 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
     function _createFlow(address _to, uint _amount, uint _days, uint _hours) external onlyOwner {
         //if only days wanted, set _hours = 0
         //if only hours wanted, set _days = 0
-        require(_days > 0 || _hours > 0);
+        require(_days > 0 || _hours > 0, "days or hours should be more than 0");
         uint secondsPerDay = 86400;
         uint secondsPerHour = 3600;
         uint _flowRate;
@@ -158,7 +181,7 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
             uint totalSeconds = (secondsPerDay * _days) + (secondsPerHour * _hours);
             _flowRate = (_amount * 1e18) / totalSeconds;
         }
-        ISuperToken(0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90).upgrade(uint(_amount * 1e18));
+        ISuperToken(0xe3CB950Cb164a31C66e32c320A800D477019DCFF).upgrade(uint(_amount * 1e18));
         _host.callAgreement(
             _cfa,
             abi.encodeWithSelector(
@@ -195,7 +218,7 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
             uint totalSeconds = (secondsPerDay * _days) + (secondsPerHour * _hours);
             _flowRate = (_amount * 1e18) / totalSeconds;
         }
-        ISuperToken(0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90).upgrade(uint(_amount * 1e18));
+        ISuperToken(0xe3CB950Cb164a31C66e32c320A800D477019DCFF).upgrade(uint(_amount * 1e18));
         _host.callAgreement(
             _cfa,
             abi.encodeWithSelector(
@@ -232,7 +255,7 @@ contract StreamRollV1 is ReentrancyGuard, Initializable {
             uint totalSeconds = (secondsPerDay * _days) + (secondsPerHour * _hours);
             _flowRate = (_amount * 1e18) / totalSeconds;
         }
-        ISuperToken(0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90).upgrade(uint(_amount * 1e18));
+        ISuperToken(0xe3CB950Cb164a31C66e32c320A800D477019DCFF).upgrade(uint(_amount * 1e18));
         _host.callAgreement(
             _cfa,
             abi.encodeWithSelector(
