@@ -4,6 +4,7 @@ pragma solidity >= 0.8.0 < 0.9.0;
 /// @title ICERC20 interface for StreamRoll
 /// @notice Basic uses specifically for our cases.
 interface ICERC20 {
+    
     function mint(uint256) external returns (uint256);
 
     function borrow(uint256) external returns (uint256);

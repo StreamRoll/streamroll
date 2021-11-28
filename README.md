@@ -7,10 +7,16 @@
 ### 4. npx hardhat run scripts/deploy.js --network rinkeby
 ### 5. Play with the contract in the frontend and / or the contract itself
 
-## DEPLOYED ADDRESSES: 
-
-#### StreamRollV1.sol on Rinkeby: 0x6FA2eF89ab4601B34313BF93E0E039cCCE213c4E
-#### CloneFactory.sol on Rinkeby: 0xef76e3bf8b39f42DBe985e02709D5470E2B3337E
-
+## DEPLOYED ADDRESSES on RINKEBY:
+#### StreamRollV1.sol on Rinkeby: #### 0x40F39E578455b96b4f1e9A3C212724AA2bf4BB29
+#### CloneFactory.sol on Rinkeby: #### 0x23bcEef5F6D9bb518668680EbDbE79F16Dc011F0
 
 
+## DEPLOYED ADDRESSES on KOVAN:
+
+
+
+## DEPLOYED ADDRESSES on MINNET :
+
+
+## DEPLOYED ADDRESSES on POLYGON:

@@ -4,6 +4,7 @@ pragma solidity >= 0.8.0 < 0.9.0;
 /// @title IComptroller interface for StreamRoll
 /// @notice Basic uses specifically for our cases.
 interface IComptroller {
+    
     function markets(address) external returns (bool, uint256);
 
     function enterMarkets(address[] calldata cTokens)
