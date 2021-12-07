@@ -1,10 +1,5 @@
-# streamroll
 
-### StreamRoll core implementation. 
-
-### StreamRollV1.sol: Main logic of StreamRoll
-
-### CloneFactory.sol: "Minimal Proxy or EIP-1167" implementation. 
+<img src ="https://github.com/rodrigoherrerai/FaceRec/blob/main/images/picandfolder.png" width="450" height="300"><img src ="https://github.com/rodrigoherrerai/FaceRec/blob/main/images/inside.png">
 
 
 ##DEPLOYED ADDRESSES on RINKEBY:
