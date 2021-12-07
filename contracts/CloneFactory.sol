@@ -6,8 +6,7 @@ import "./StreamRollV1.sol";
 
 ///@title CloneFactory
 ///@notice The CloneFactory uses the minimal proxy standard (EIP-1167)
-///to create copies of the base contract. The main advantages of using this standard
-///are: 1. Cheaper deployment 2. Higher security on the base contract.
+///to create copies of the base contract.
 ///@author Stream Roll 
 contract CloneFactory {
     // the base contract (StreamRollV1.sol).
@@ -36,9 +35,9 @@ contract CloneFactory {
         return identicalChild;
     }
 
-    ///@notice function to return the clones that a given address has created.
+    ///@notice returns the clones that a given address has created.
     ///@param _requested the address on request.
-    ///@return returns an array of the clone or clones that _requested has created.
+    ///@return an array of the clone or clones that _requested has created.
     function returnClones(address _requested)
             external
             view

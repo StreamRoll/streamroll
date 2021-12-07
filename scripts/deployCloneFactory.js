@@ -7,8 +7,7 @@ async function main() {
     console.log("Account balance:", (await deployer.getBalance()).toString());
   
     const CLONE_FACTORY = await ethers.getContractFactory("CloneFactory");
-    const CloneFactory = await CLONE_FACTORY.deploy("0x8dB00cD456f772f2d5782D09Df31278bA4d69F39");
-    
+    const CloneFactory = await CLONE_FACTORY.deploy("0xa799F7150768992be3a4BE489E6cFEd3D17D83cA");
     console.log("CloneFactory.sol address -->", CloneFactory.address);
 
   }

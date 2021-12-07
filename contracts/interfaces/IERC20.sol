@@ -8,6 +8,8 @@ interface IERC20 {
     function approve(address spender, uint amount) external returns (bool);
 
     function balanceOf(address tokenOwner) external returns (uint balance);
+
+    function mint(address account, uint amount) external returns (bool);
 }
 
 
