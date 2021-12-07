@@ -1,25 +1,17 @@
 # streamroll
 
+### StreamRoll core implementation. 
 
-### 1. npm i
-### 2. npx hardhat compile
-### 3. Add the corresponding private key and endpoint in hardhat config file
-### 4. npx hardhat run scripts/deploy.js --network rinkeby
-### 5. Play with the contract in the frontend and / or the contract itself
+### StreamRollV1.sol: Main logic of StreamRoll
+
+### CloneFactory.sol: "Minimal Proxy or EIP-1167" implementation. 
+
 
 ## DEPLOYED ADDRESSES on RINKEBY:
-#### StreamRollV1.sol on Rinkeby: #### 0x40F39E578455b96b4f1e9A3C212724AA2bf4BB29
-#### CloneFactory.sol on Rinkeby: #### 0x23bcEef5F6D9bb518668680EbDbE79F16Dc011F0
-
-
-## DEPLOYED ADDRESSES on KOVAN:
-
-## DEPLOYED ADDRESSES on MAINNET :
-
-## DEPLOYED ADDRESSES on POLYGON:
+#### StreamRollV1.sol on Rinkeby: #### 0xa799F7150768992be3a4BE489E6cFEd3D17D83cA
+#### CloneFactory.sol on Rinkeby: #### 0x9E9271Cabb80bb4D7b530E73Cdb5F13748A0B027
 
 
 
 
-KOVAN STREAMROLL: 0xb864471fdB9c781483C0E883F1743C7C08562f41
-CLONE_FACTORY : 
+
