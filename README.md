@@ -41,6 +41,9 @@ StreamRoll implements the Minimal Proxy Contract Standard or [EIP-1167](https://
 `CloneFactory.sol`:
 * This contract will make idential copes of `StreamRollV1.sol`.
 * The DAO and/or user will call the `_clone()` function to create a copy of `StreamRollV1.sol` via the Minial Proxy Contract Standard. 
+
+<img src ="https://github.com/StreamRoll/streamroll/blob/master/images/ProxyStructure.png">
+
 ---
 ## Security :closed_lock_with_key: :link:
 * Immediately after the `_clone()` function is triggered, the `initialize()` function is also triggered for the `StreamRollV1.sol` copy as `msg.sender` for the argument. 
@@ -54,9 +57,6 @@ StreamRoll implements the Minimal Proxy Contract Standard or [EIP-1167](https://
 
 [^1]: Would be V2. :checkered_flag:
 
-
-<img src ="https://github.com/StreamRoll/streamroll/blob/master/images/im-1.png">
-<img src ="https://github.com/StreamRoll/streamroll/blob/master/images/im-2.png">
 
 
 
