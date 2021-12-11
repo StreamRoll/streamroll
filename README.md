@@ -54,8 +54,12 @@ StreamRoll implements the Minimal Proxy Contract Standard or [EIP-1167](https://
 * Sound familiar? We got inspired by a protocol that implemented a similar architecture → [Gnosis Safe](https://gnosis-safe.io/).
 
 ## DAO Global Hackathon
-* We lost three front-end dev's during our process  :anguished:, so it is what it is.  We think it unique with lots of character 
+* We lost three front-end dev's during our process  :anguished:, so it is what it is.  We think it is unique with lots of character :sparkles:
 * When we went to upload the video, we noticed no sound :no_entry_sign::sound: was recorded and we can re-make it.  We did upload it and plan to make one with sound, since we think people want to hear us, maybe??  Our team is global and we cannot re-do it at 8:00pm CST 12/10/21. 
+* We begin work on this project from an uncompleted idea for ETH Global.  We knew we wanted to keep working on this and saw the DAO Global Hackathon a perfect fit in which we put a lot of effort (and still are....lol) into.
+* Contact:
+ * Chris Adams
+ * chrisadams@startmail.com  
 
 [^1]: Would be V2. :checkered_flag:
 
