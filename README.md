@@ -7,10 +7,10 @@
 
 ---
 
-## Pain and Target Audience
+## Pain and Target Audience :weary: :dart:
 DAOs and other crypto entities who have to efficiently utilize their treasury for ongoing expenses.  Whether the treasury is concentrated with majority of governance tokens or well diversified, these DAOs need liquidity solutions that minimize tax events, support HR and the flow of capital within the DAO (guilds). 
 
-## Solution
+## Solution :heavy_check_mark:
 StreamRoll has several unique solutions to streamline the HR nightmare.  We begin with creating a "safe" for each DAO that will allow them to borrow and lend their capital, pay payroll and automate HR as efficiently as possible. 
 
 
