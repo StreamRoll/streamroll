@@ -53,7 +53,9 @@ StreamRoll implements the Minimal Proxy Contract Standard or [EIP-1167](https://
 * Once the safe is created, you cannot change the `owner` and is a one-way function :arrow_right:, funds can only be retrieved from the `owner` to the `owner`.
 * Sound familiar? We got inspired by a protocol that implemented a similar architecture → [Gnosis Safe](https://gnosis-safe.io/).
 
-
+## DAO Global Hackathon
+* We lost three front-end dev's during our process  :anguished:, so it is what it is.  We think it unique with lots of character 
+* When we went to upload the video, we noticed no sound :no_entry_sign::sound: was recorded and we can re-make it.  We did upload it and plan to make one with sound, since we think people want to hear us, maybe??  Our team is global and we cannot re-do it at 8:00pm CST 12/10/21. 
 
 [^1]: Would be V2. :checkered_flag:
 
